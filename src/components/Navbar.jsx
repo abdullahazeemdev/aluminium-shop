@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Logo from "../assets/logo.png";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -34,82 +35,78 @@ const Navbar = () => {
                     {/* Desktop Navigation */}
                     <ul className="hidden lg:flex items-center gap-6 xl:gap-8 list-none m-0 p-0">
 
-                        <li>
-                            <a
-                                href="#"
-                                className="text-[#ff7700] text-sm font-medium"
+                        <Link to={"/"}>
+                            <li
+                                className="text-[#b0b0b0] hover:text-[#ff7700] text-sm font-medium transition-colors"
                             >
                                 Home
-                            </a>
-                        </li>
 
-                        <li>
-                            <a
-                                href="#"
+                            </li>
+                        </Link>
+
+                        <Link to={"/dashboard/products"}>
+                            <li
                                 className="text-[#b0b0b0] hover:text-[#ff7700] text-sm font-medium transition-colors"
                             >
                                 Products
-                            </a>
-                        </li>
 
-                        <li>
-                            <a
-                                href="#"
+                            </li>
+                        </Link>
+
+                        <Link to={"/dashboard/services"}>
+                            <li
                                 className="text-[#b0b0b0] hover:text-[#ff7700] text-sm font-medium transition-colors"
                             >
                                 Services
-                            </a>
-                        </li>
 
-                        <li>
-                            <a
-                                href="#"
+                            </li>
+                        </Link>
+
+                        <Link to={"/dashboard/about"}>
+                            <li
                                 className="text-[#b0b0b0] hover:text-[#ff7700] text-sm font-medium transition-colors"
                             >
                                 About Us
-                            </a>
-                        </li>
 
-                        <li>
-                            <a
-                                href="#"
+                            </li>
+                        </Link>
+
+                        <Link to={"/why-aluminium"}>
+                            <li
                                 className="text-[#b0b0b0] hover:text-[#ff7700] text-sm font-medium transition-colors"
                             >
                                 Why Aluminium?
-                            </a>
-                        </li>
+                            </li>
+                        </Link>
 
-                        <li>
-                            <a
-                                href="#"
+                        <Link to={"/dashboard/contact"}>
+                            <li
                                 className="text-[#b0b0b0] hover:text-[#ff7700] text-sm font-medium transition-colors"
                             >
-                                Contact Us
-                            </a>
-                        </li>
-
+                               Contact Us
+                            </li>
+                        </Link>
                     </ul>
 
 
                     {/* Desktop Auth Buttons */}
                     <div className="hidden lg:flex items-center gap-3">
 
-                        <a
-                            href="#"
-                            className="flex items-center gap-2 text-white text-sm font-medium px-4 xl:px-5 py-2.5 border border-[#444] rounded-lg hover:border-[#ff7700] hover:text-[#ff7700] transition-all"
+                        <li
+                            className="flex items-center gap-2 text-white text-sm font-medium px-4 xl:px-5 py-2.5 border border-[#444] rounded-lg cursor-pointer hover:border-[#ff7700] hover:text- [#ff7700] transition-all"
                         >
                             <i className="fa-solid fa-user"></i>
-                            <span>Login</span>
-                        </a>
+                            <Link to={"/login"}><span>Login</span></Link>
+                        </li>
 
-                        <a
-                            href="#"
-                            className="flex items-center gap-2 text-white bg-gradient-to-r from-[#ff7700] to-[#ff5500] text-sm font-semibold px-4 xl:px-5 py-2.5 rounded-lg hover:opacity-90 transition-all"
+                        <li
+                            className="flex items-center gap-2 text-white cursor-pointer bg-gradient-to-r from-[#ff7700] to-[#ff5500] text-sm font-semibold px-4 xl:px-5 py-2.5 rounded-lg hover:opacity-90 transition-all"
                         >
                             <i className="fa-solid fa-user-plus"></i>
-                            <span>Create Account</span>
+
+                            <Link to={"/signup"}><span>Create Account</span></Link>
                             <i className="fa-solid fa-arrow-right"></i>
-                        </a>
+                        </li>
 
                     </div>
 
@@ -120,9 +117,8 @@ const Navbar = () => {
                         className="lg:hidden text-white text-2xl p-2 cursor-pointer"
                     >
                         <i
-                            className={`fa-solid ${
-                                isOpen ? "fa-xmark" : "fa-bars"
-                            }`}
+                            className={`fa-solid ${isOpen ? "fa-xmark" : "fa-bars"
+                                }`}
                         ></i>
                     </button>
 
