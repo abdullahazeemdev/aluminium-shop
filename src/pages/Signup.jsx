@@ -1,9 +1,89 @@
 import React, { useState } from "react";
 import Img from "../assets/home.png";
+import Input from "../components/Input";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../components/firebase/config";
+// import { toast } from "react-toastify";
+import Toast from "../components/toast";
 
 const Signup = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const [form, setForm] = useState({
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        phone: "",
+    });
+
+    const handleInput = (e) => {
+        const { name, value } = e.target;
+
+        setForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const signupHandler = async (e) => {
+        e.preventDefault();
+
+        if (
+            !form.username ||
+            !form.email ||
+            !form.phone ||
+            !form.password ||
+            !form.confirmPassword
+        ) {
+            toast.error("Please fill in all fields.");
+            return;
+        }
+
+        if (form.password.length < 6) {
+            toast.error("Password must be at least 6 characters.");
+            return;
+        }
+
+        if (form.password !== form.confirmPassword) {
+            toast.error("Passwords do not match.");
+            return;
+        }
+
+        try {
+            const response = await createUserWithEmailAndPassword(
+                auth,
+                form.email,
+                form.password
+            );
+
+            console.log("Signup successful:", response);
+
+            toast.success("Account created successfully! 🎉");
+
+            setForm({
+                username: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+                phone: "",
+            });
+
+        } catch (error) {
+            console.log("Signup error:", error);
+
+            if (error.code === "auth/email-already-in-use") {
+                toast.error("This email is already registered.");
+            } else if (error.code === "auth/invalid-email") {
+                toast.error("Please enter a valid email address.");
+            } else if (error.code === "auth/weak-password") {
+                toast.error("Password is too weak.");
+            } else {
+                toast.error("Something went wrong. Please try again.");
+            }
+        }
+    };
 
     return (
         <div className="min-h-screen bg-[#0a0a0a] text-white font-sans overflow-x-hidden">
@@ -11,6 +91,8 @@ const Signup = () => {
             <main className="min-h-screen lg:h-screen flex items-center justify-center px-4 sm:px-6 py-6 lg:py-4 lg:overflow-hidden">
 
                 <div className="w-full max-w-6xl lg:h-[92vh] lg:max-h-[680px] grid grid-cols-1 lg:grid-cols-2 bg-[#111111] border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+
+                    {/* LEFT SIDE */}
 
                     <div className="relative hidden lg:flex h-full overflow-hidden">
 
@@ -27,7 +109,6 @@ const Signup = () => {
                         <div className="relative z-10 flex flex-col justify-between w-full p-10">
 
                             <div>
-
                                 <div className="flex items-center gap-3">
 
                                     <div className="w-11 h-11 rounded-lg bg-orange-600/10 border border-orange-500/30 flex items-center justify-center">
@@ -45,7 +126,6 @@ const Signup = () => {
                                     </div>
 
                                 </div>
-
                             </div>
 
                             <div>
@@ -78,6 +158,7 @@ const Signup = () => {
 
                                     <div className="flex items-center gap-2">
                                         <i className="fa-solid fa-shield-halved text-orange-500"></i>
+
                                         <span className="text-xs text-gray-400">
                                             Secure
                                         </span>
@@ -85,15 +166,9 @@ const Signup = () => {
 
                                     <div className="flex items-center gap-2">
                                         <i className="fa-solid fa-box text-orange-500"></i>
+
                                         <span className="text-xs text-gray-400">
                                             Quality
-                                        </span>
-                                    </div>
-
-                                    <div className="flex items-center gap-2">
-                                        <i className="fa-solid fa-truck-fast text-orange-500"></i>
-                                        <span className="text-xs text-gray-400">
-                                            Delivery
                                         </span>
                                     </div>
 
@@ -109,9 +184,13 @@ const Signup = () => {
 
                     </div>
 
+                    {/* RIGHT SIDE */}
+
                     <div className="flex items-center justify-center bg-[#141414] px-6 sm:px-10 lg:px-12 py-7 lg:py-5 overflow-y-auto">
 
                         <div className="w-full max-w-md">
+
+                            {/* MOBILE LOGO */}
 
                             <div className="lg:hidden flex items-center gap-3 mb-7">
 
@@ -130,6 +209,8 @@ const Signup = () => {
                                 </div>
 
                             </div>
+
+                            {/* HEADING */}
 
                             <div className="mb-5">
 
@@ -153,70 +234,50 @@ const Signup = () => {
 
                             </div>
 
+                            {/* FORM */}
+
                             <form
-                                onSubmit={(e) => e.preventDefault()}
+                                onSubmit={signupHandler}
                                 className="space-y-3.5"
                             >
 
-                                <div>
+                                {/* FULL NAME */}
 
-                                    <label className="block text-xs font-medium text-gray-300 mb-1.5">
-                                        Full Name
-                                    </label>
+                                <Input
+                                    handler={handleInput}
+                                    label="Full Name"
+                                    placeholder="Enter your full name"
+                                    type="text"
+                                    icon="fa-solid fa-user"
+                                    value={form.username}
+                                    name="username"
+                                />
 
-                                    <div className="relative">
+                                {/* EMAIL */}
 
-                                        <i className="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 text-sm pointer-events-none"></i>
+                                <Input
+                                    handler={handleInput}
+                                    type="email"
+                                    label="Email Address"
+                                    placeholder="you@example.com"
+                                    icon="fa-solid fa-envelope"
+                                    value={form.email}
+                                    name="email"
+                                />
 
-                                        <input
-                                            type="text"
-                                            placeholder="Enter your full name"
-                                            className="w-full h-11 pl-11 pr-4 bg-[#0c0c0c] border border-white/10 rounded-lg text-sm text-white placeholder-gray-600 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all"
-                                        />
+                                {/* PHONE */}
 
-                                    </div>
+                                <Input
+                                    handler={handleInput}
+                                    label="Phone Number"
+                                    type="tel"
+                                    placeholder="+92 300 0000000"
+                                    icon="fa-solid fa-phone"
+                                    value={form.phone}
+                                    name="phone"
+                                />
 
-                                </div>
-
-                                <div>
-
-                                    <label className="block text-xs font-medium text-gray-300 mb-1.5">
-                                        Email Address
-                                    </label>
-
-                                    <div className="relative">
-
-                                        <i className="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 text-sm pointer-events-none"></i>
-
-                                        <input
-                                            type="email"
-                                            placeholder="you@example.com"
-                                            className="w-full h-11 pl-11 pr-4 bg-[#0c0c0c] border border-white/10 rounded-lg text-sm text-white placeholder-gray-600 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all"
-                                        />
-
-                                    </div>
-
-                                </div>
-
-                                <div>
-
-                                    <label className="block text-xs font-medium text-gray-300 mb-1.5">
-                                        Phone Number
-                                    </label>
-
-                                    <div className="relative">
-
-                                        <i className="fa-solid fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 text-sm pointer-events-none"></i>
-
-                                        <input
-                                            type="tel"
-                                            placeholder="+92 300 0000000"
-                                            className="w-full h-11 pl-11 pr-4 bg-[#0c0c0c] border border-white/10 rounded-lg text-sm text-white placeholder-gray-600 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all"
-                                        />
-
-                                    </div>
-
-                                </div>
+                                {/* PASSWORD */}
 
                                 <div>
 
@@ -229,14 +290,23 @@ const Signup = () => {
                                         <i className="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 text-sm pointer-events-none"></i>
 
                                         <input
-                                            type={showPassword ? "text" : "password"}
+                                            name="password"
+                                            value={form.password}
+                                            onChange={handleInput}
+                                            type={
+                                                showPassword
+                                                    ? "text"
+                                                    : "password"
+                                            }
                                             placeholder="Create a password"
                                             className="w-full h-11 pl-11 pr-12 bg-[#0c0c0c] border border-white/10 rounded-lg text-sm text-white placeholder-gray-600 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all"
                                         />
 
                                         <button
                                             type="button"
-                                            onClick={() => setShowPassword(!showPassword)}
+                                            onClick={() =>
+                                                setShowPassword(!showPassword)
+                                            }
                                             className="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-gray-600 hover:text-orange-500 transition-colors cursor-pointer"
                                         >
                                             <i
@@ -252,6 +322,8 @@ const Signup = () => {
 
                                 </div>
 
+                                {/* CONFIRM PASSWORD */}
+
                                 <div>
 
                                     <label className="block text-xs font-medium text-gray-300 mb-1.5">
@@ -263,14 +335,25 @@ const Signup = () => {
                                         <i className="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 text-sm pointer-events-none"></i>
 
                                         <input
-                                            type={showConfirmPassword ? "text" : "password"}
+                                            name="confirmPassword"
+                                            value={form.confirmPassword}
+                                            onChange={handleInput}
+                                            type={
+                                                showConfirmPassword
+                                                    ? "text"
+                                                    : "password"
+                                            }
                                             placeholder="Confirm your password"
                                             className="w-full h-11 pl-11 pr-12 bg-[#0c0c0c] border border-white/10 rounded-lg text-sm text-white placeholder-gray-600 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all"
                                         />
 
                                         <button
                                             type="button"
-                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            onClick={() =>
+                                                setShowConfirmPassword(
+                                                    !showConfirmPassword
+                                                )
+                                            }
                                             className="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-gray-600 hover:text-orange-500 transition-colors cursor-pointer"
                                         >
                                             <i
@@ -286,6 +369,8 @@ const Signup = () => {
 
                                 </div>
 
+                                {/* TERMS */}
+
                                 <label className="flex items-start gap-2 pt-1 text-xs text-gray-500 cursor-pointer">
 
                                     <input
@@ -294,7 +379,8 @@ const Signup = () => {
                                     />
 
                                     <span className="leading-5">
-                                        I agree to the
+                                        I agree to
+
                                         <a
                                             href="#terms"
                                             className="text-orange-500 hover:text-orange-400 ml-1"
@@ -305,11 +391,12 @@ const Signup = () => {
 
                                 </label>
 
+                                {/* CREATE ACCOUNT */}
+
                                 <button
                                     type="submit"
                                     className="group w-full h-11 bg-orange-600 hover:bg-orange-500 rounded-lg text-sm font-semibold flex items-center justify-center gap-3 transition-all duration-300 hover:shadow-lg hover:shadow-orange-600/20 cursor-pointer"
                                 >
-
                                     <i className="fa-solid fa-user-plus"></i>
 
                                     <span>
@@ -317,10 +404,11 @@ const Signup = () => {
                                     </span>
 
                                     <i className="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
-
                                 </button>
 
                             </form>
+
+                            {/* OR */}
 
                             <div className="flex items-center gap-4 my-5">
 
@@ -334,18 +422,20 @@ const Signup = () => {
 
                             </div>
 
+                            {/* GOOGLE */}
+
                             <button
                                 type="button"
                                 className="w-full h-11 border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] rounded-lg flex items-center justify-center gap-3 text-sm font-medium text-gray-300 transition-all cursor-pointer"
                             >
-
                                 <i className="fa-brands fa-google text-sm"></i>
 
                                 <span>
                                     Continue with Google
                                 </span>
-
                             </button>
+
+                            {/* LOGIN */}
 
                             <p className="text-center text-xs text-gray-500 mt-5">
 
@@ -359,6 +449,8 @@ const Signup = () => {
                                 </a>
 
                             </p>
+
+                            {/* SECURITY */}
 
                             <div className="flex items-center justify-center gap-2 mt-5 text-[10px] text-gray-600">
 
@@ -377,6 +469,8 @@ const Signup = () => {
                 </div>
 
             </main>
+
+            <Toast />
 
         </div>
     );
