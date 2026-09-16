@@ -13,7 +13,7 @@ const Navbar = () => {
                 <div className="flex items-center justify-between">
 
                     {/* Logo */}
-                    <div className="flex items-center gap-2 sm:gap-3">
+                    <Link to="/" className="flex items-center gap-2 sm:gap-3">
                         <img
                             src={Logo}
                             alt="ALU PRO Logo"
@@ -29,87 +29,88 @@ const Navbar = () => {
                                 ALUMINIUM SOLUTIONS
                             </span>
                         </div>
-                    </div>
-
+                    </Link>
 
                     {/* Desktop Navigation */}
                     <ul className="hidden lg:flex items-center gap-6 xl:gap-8 list-none m-0 p-0">
 
-                        <Link to={"/"}>
-                            <li
+                        <li>
+                            <Link
+                                to="/"
                                 className="text-[#b0b0b0] hover:text-[#ff7700] text-sm font-medium transition-colors"
                             >
                                 Home
+                            </Link>
+                        </li>
 
-                            </li>
-                        </Link>
-
-                        <Link to={"/dashboard/products"}>
-                            <li
+                        <li>
+                            <Link
+                                to="/products"
                                 className="text-[#b0b0b0] hover:text-[#ff7700] text-sm font-medium transition-colors"
                             >
                                 Products
+                            </Link>
+                        </li>
 
-                            </li>
-                        </Link>
-
-                        <Link to={"/dashboard/services"}>
-                            <li
+                        <li>
+                            <Link
+                                to="/services"
                                 className="text-[#b0b0b0] hover:text-[#ff7700] text-sm font-medium transition-colors"
                             >
                                 Services
+                            </Link>
+                        </li>
 
-                            </li>
-                        </Link>
-
-                        <Link to={"/dashboard/about"}>
-                            <li
+                        <li>
+                            <Link
+                                to="/about"
                                 className="text-[#b0b0b0] hover:text-[#ff7700] text-sm font-medium transition-colors"
                             >
                                 About Us
+                            </Link>
+                        </li>
 
-                            </li>
-                        </Link>
-
-                        <Link to={"/why-aluminium"}>
-                            <li
+                        <li>
+                            <Link
+                                to="/why-aluminium"
                                 className="text-[#b0b0b0] hover:text-[#ff7700] text-sm font-medium transition-colors"
                             >
                                 Why Aluminium?
-                            </li>
-                        </Link>
+                            </Link>
+                        </li>
 
-                        <Link to={"/dashboard/contact"}>
-                            <li
+                        <li>
+                            <Link
+                                to="/contact"
                                 className="text-[#b0b0b0] hover:text-[#ff7700] text-sm font-medium transition-colors"
                             >
-                               Contact Us
-                            </li>
-                        </Link>
-                    </ul>
+                                Contact Us
+                            </Link>
+                        </li>
 
+                    </ul>
 
                     {/* Desktop Auth Buttons */}
                     <div className="hidden lg:flex items-center gap-3">
 
-                        <li
-                            className="flex items-center gap-2 text-white text-sm font-medium px-4 xl:px-5 py-2.5 border border-[#444] rounded-lg cursor-pointer hover:border-[#ff7700] hover:text- [#ff7700] transition-all"
+                        <Link
+                            to="/login"
+                            className="flex items-center gap-2 text-white text-sm font-medium px-4 xl:px-5 py-2.5 border border-[#444] rounded-lg cursor-pointer hover:border-[#ff7700] hover:text-[#ff7700] transition-all"
                         >
                             <i className="fa-solid fa-user"></i>
-                            <Link to={"/login"}><span>Login</span></Link>
-                        </li>
+                            <span>Login</span>
+                        </Link>
 
-                        <li
+                        <Link
+                            to="/signup"
                             className="flex items-center gap-2 text-white cursor-pointer bg-gradient-to-r from-[#ff7700] to-[#ff5500] text-sm font-semibold px-4 xl:px-5 py-2.5 rounded-lg hover:opacity-90 transition-all"
                         >
                             <i className="fa-solid fa-user-plus"></i>
-
-                            <Link to={"/signup"}><span>Create Account</span></Link>
+                            <span>Create Account</span>
                             <i className="fa-solid fa-arrow-right"></i>
-                        </li>
+                        </Link>
 
                     </div>
-
 
                     {/* Mobile Menu Button */}
                     <button
@@ -117,83 +118,81 @@ const Navbar = () => {
                         className="lg:hidden text-white text-2xl p-2 cursor-pointer"
                     >
                         <i
-                            className={`fa-solid ${isOpen ? "fa-xmark" : "fa-bars"
-                                }`}
+                            className={`fa-solid ${
+                                isOpen ? "fa-xmark" : "fa-bars"
+                            }`}
                         ></i>
                     </button>
 
                 </div>
 
-
                 {/* Mobile Menu */}
                 {isOpen && (
                     <div className="lg:hidden mt-4 border-t border-[#222] pt-4">
 
-                        {/* Mobile Navigation */}
                         <ul className="flex flex-col gap-1 list-none m-0 p-0">
 
                             <li>
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/"
                                     onClick={() => setIsOpen(false)}
-                                    className="block text-[#ff7700] text-sm font-medium px-3 py-3 rounded-lg bg-[#1b1b1b]"
+                                    className="block text-[#b0b0b0] hover:text-[#ff7700] hover:bg-[#1b1b1b] text-sm font-medium px-3 py-3 rounded-lg transition-all"
                                 >
                                     Home
-                                </a>
+                                </Link>
                             </li>
 
                             <li>
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/products"
                                     onClick={() => setIsOpen(false)}
                                     className="block text-[#b0b0b0] hover:text-[#ff7700] hover:bg-[#1b1b1b] text-sm font-medium px-3 py-3 rounded-lg transition-all"
                                 >
                                     Products
-                                </a>
+                                </Link>
                             </li>
 
                             <li>
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/services"
                                     onClick={() => setIsOpen(false)}
                                     className="block text-[#b0b0b0] hover:text-[#ff7700] hover:bg-[#1b1b1b] text-sm font-medium px-3 py-3 rounded-lg transition-all"
                                 >
                                     Services
-                                </a>
+                                </Link>
                             </li>
 
                             <li>
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/about"
                                     onClick={() => setIsOpen(false)}
                                     className="block text-[#b0b0b0] hover:text-[#ff7700] hover:bg-[#1b1b1b] text-sm font-medium px-3 py-3 rounded-lg transition-all"
                                 >
                                     About Us
-                                </a>
+                                </Link>
                             </li>
 
                             <li>
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/why-aluminium"
                                     onClick={() => setIsOpen(false)}
                                     className="block text-[#b0b0b0] hover:text-[#ff7700] hover:bg-[#1b1b1b] text-sm font-medium px-3 py-3 rounded-lg transition-all"
                                 >
                                     Why Aluminium?
-                                </a>
+                                </Link>
                             </li>
 
                             <li>
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/contact"
                                     onClick={() => setIsOpen(false)}
                                     className="block text-[#b0b0b0] hover:text-[#ff7700] hover:bg-[#1b1b1b] text-sm font-medium px-3 py-3 rounded-lg transition-all"
                                 >
                                     Contact Us
-                                </a>
+                                </Link>
                             </li>
 
                         </ul>
-
 
                     </div>
                 )}

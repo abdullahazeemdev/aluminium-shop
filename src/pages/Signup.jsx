@@ -1,12 +1,20 @@
 import React, { useState } from "react";
+import Logo from "../assets/logo.png"
 import Img from "../assets/home.png";
 import Input from "../components/Input";
+import { toast } from "react-toastify";
+import Toast from "../components/toast";
+import { Link } from "react-router-dom";
+
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../components/firebase/config";
-// import { toast } from "react-toastify";
-import Toast from "../components/toast";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import SignupGoogle from "../components/signupGoogle";
+
 
 const Signup = () => {
+
+
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -85,6 +93,27 @@ const Signup = () => {
         }
     };
 
+    const signupGoogle = async () => {
+        try {
+            const provider = new GoogleAuthProvider();
+
+            const response = await signInWithPopup(auth, provider);
+
+            console.log("Google Signup Successful:", response.user);
+
+            toast.success("Google account created successfully! 🎉");
+
+        } catch (error) {
+            console.log("Google Signup Error:", error);
+
+            if (error.code === "auth/popup-closed-by-user") {
+                toast.error("Google signup was cancelled.");
+            } else {
+                toast.error("Google signup failed. Please try again.");
+            }
+        }
+    };
+
     return (
         <div className="min-h-screen bg-[#0a0a0a] text-white font-sans overflow-x-hidden">
 
@@ -112,7 +141,10 @@ const Signup = () => {
                                 <div className="flex items-center gap-3">
 
                                     <div className="w-11 h-11 rounded-lg bg-orange-600/10 border border-orange-500/30 flex items-center justify-center">
-                                        <i className="fa-solid fa-layer-group text-orange-500 text-lg"></i>
+                                        {/* <i className="fa-solid fa-layer-group text-orange-500 text-lg"></i> 
+                                        */}
+
+                                        <img src={Logo} alt="" />
                                     </div>
 
                                     <div>
@@ -157,19 +189,33 @@ const Signup = () => {
                                 <div className="flex items-center gap-6 mt-7 pt-6 border-t border-white/10">
 
                                     <div className="flex items-center gap-2">
+
                                         <i className="fa-solid fa-shield-halved text-orange-500"></i>
 
                                         <span className="text-xs text-gray-400">
                                             Secure
                                         </span>
+
                                     </div>
 
                                     <div className="flex items-center gap-2">
+
                                         <i className="fa-solid fa-box text-orange-500"></i>
 
                                         <span className="text-xs text-gray-400">
                                             Quality
                                         </span>
+
+                                    </div>
+
+                                    <div className="flex items-center gap-2">
+
+                                        <i className="fa-solid fa-headset text-orange-500"></i>
+
+                                        <span className="text-xs text-gray-400">
+                                            Support
+                                        </span>
+
                                     </div>
 
                                 </div>
@@ -310,11 +356,10 @@ const Signup = () => {
                                             className="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-gray-600 hover:text-orange-500 transition-colors cursor-pointer"
                                         >
                                             <i
-                                                className={`fa-solid ${
-                                                    showPassword
-                                                        ? "fa-eye-slash"
-                                                        : "fa-eye"
-                                                } text-sm`}
+                                                className={`fa-solid ${showPassword
+                                                    ? "fa-eye-slash"
+                                                    : "fa-eye"
+                                                    } text-sm`}
                                             ></i>
                                         </button>
 
@@ -357,11 +402,10 @@ const Signup = () => {
                                             className="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-gray-600 hover:text-orange-500 transition-colors cursor-pointer"
                                         >
                                             <i
-                                                className={`fa-solid ${
-                                                    showConfirmPassword
-                                                        ? "fa-eye-slash"
-                                                        : "fa-eye"
-                                                } text-sm`}
+                                                className={`fa-solid ${showConfirmPassword
+                                                    ? "fa-eye-slash"
+                                                    : "fa-eye"
+                                                    } text-sm`}
                                             ></i>
                                         </button>
 
@@ -424,7 +468,8 @@ const Signup = () => {
 
                             {/* GOOGLE */}
 
-                            <button
+                            {/* <button
+                                onClick={signupGoogle}
                                 type="button"
                                 className="w-full h-11 border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] rounded-lg flex items-center justify-center gap-3 text-sm font-medium text-gray-300 transition-all cursor-pointer"
                             >
@@ -433,7 +478,9 @@ const Signup = () => {
                                 <span>
                                     Continue with Google
                                 </span>
-                            </button>
+                            </button> */}
+
+                            <SignupGoogle title={"Signup with Google"} toastify={" Google signup successful! 🎉"}/>
 
                             {/* LOGIN */}
 
@@ -441,12 +488,13 @@ const Signup = () => {
 
                                 Already have an account?
 
-                                <a
-                                    href="#login"
-                                    className="ml-1 text-orange-500 hover:text-orange-400 font-semibold transition-colors"
-                                >
-                                    Login
-                                </a>
+                                <Link to={"/login"}>
+                                    <button
+                                        className="ml-1 text-orange-500 hover:text-orange-400 font-semibold transition-colors cursor-pointer"
+                                    >
+                                        Login
+                                    </button>
+                                </Link>
 
                             </p>
 

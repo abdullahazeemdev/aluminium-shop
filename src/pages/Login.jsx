@@ -1,9 +1,73 @@
 import React, { useState } from "react";
-import Navbar from "../components/Navbar";
 import Img from "../assets/home.png";
+import Logo from "../assets/logo.png";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../components/firebase/config";
+import { toast } from "react-toastify";
+import Toast from "../components/toast";
+import { Link } from "react-router-dom";
+import signupGoogle from "../components/signupGoogle";
+import Signup from "./Signup";
+import SignupGoogle from "../components/signupGoogle";
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
+
+    const [form, setForm] = useState({
+        email: "",
+        password: "",
+    });
+
+    const inputHandler = (e) => {
+        const { name, value } = e.target;
+
+        setForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const loginHandler = async (e) => {
+        e.preventDefault();
+
+        // Empty fields validation
+        if (!form.email || !form.password) {
+            toast.error("Please enter email and password.");
+            return;
+        }
+
+        try {
+            await signInWithEmailAndPassword(
+                auth,
+                form.email,
+                form.password
+            );
+
+            toast.success("Login successful! 🎉");
+
+            setForm({
+                email: "",
+                password: "",
+            });
+
+        } catch (error) {
+            console.log("Login error:", error);
+
+            if (error.code === "auth/invalid-credential") {
+                toast.error("Invalid email or password.");
+            } else if (error.code === "auth/invalid-email") {
+                toast.error("Please enter a valid email address.");
+            } else if (error.code === "auth/user-disabled") {
+                toast.error("This account has been disabled.");
+            } else if (error.code === "auth/too-many-requests") {
+                toast.error(
+                    "Too many login attempts. Please try again later."
+                );
+            } else {
+                toast.error("Login failed. Please try again.");
+            }
+        }
+    };
 
     return (
         <div className="min-h-screen bg-[#0a0a0a] text-white font-sans overflow-x-hidden flex justify-center items-center">
@@ -12,13 +76,15 @@ const Login = () => {
 
                 <div className="w-full max-w-6xl lg:h-[90vh] lg:max-h-[650px] grid grid-cols-1 lg:grid-cols-2 bg-[#111111] border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
 
+                    {/* LEFT SIDE */}
+
                     <div className="relative hidden lg:flex h-full overflow-hidden">
 
                         <img
                             src={Img}
                             alt="Aluminium Products"
                             className="absolute inset-0 w-full h-full object-cover"
-                        /> 
+                        />
 
                         <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/70 to-black/40"></div>
 
@@ -31,10 +97,16 @@ const Login = () => {
                                 <div className="flex items-center gap-3 mb-7">
 
                                     <div className="w-11 h-11 rounded-lg bg-orange-600/10 border border-orange-500/30 flex items-center justify-center">
-                                        <i className="fa-solid fa-layer-group text-orange-500 text-lg"></i>
+
+                                        <img
+                                            src={Logo}
+                                            alt="ALU PRO Logo"
+                                        />
+
                                     </div>
 
                                     <div>
+
                                         <h2 className="text-xl font-extrabold tracking-wider">
                                             ALU PRO
                                         </h2>
@@ -42,6 +114,7 @@ const Login = () => {
                                         <p className="text-[9px] text-gray-500 tracking-[0.2em]">
                                             ALUMINIUM SOLUTIONS
                                         </p>
+
                                     </div>
 
                                 </div>
@@ -61,39 +134,54 @@ const Login = () => {
                             <div>
 
                                 <h1 className="text-4xl xl:text-5xl font-extrabold leading-tight mb-4">
+
                                     Welcome
+
                                     <br />
+
                                     <span className="text-orange-500">
                                         Back!
                                     </span>
+
                                 </h1>
 
                                 <p className="text-gray-400 text-sm leading-6 max-w-md">
+
                                     Sign in to your ALU PRO account and continue
                                     exploring our premium aluminium solutions.
+
                                 </p>
 
                                 <div className="flex items-center gap-6 mt-7 pt-6 border-t border-white/10">
 
                                     <div className="flex items-center gap-2">
+
                                         <i className="fa-solid fa-shield-halved text-orange-500"></i>
+
                                         <span className="text-xs text-gray-400">
                                             Secure
                                         </span>
+
                                     </div>
 
                                     <div className="flex items-center gap-2">
+
                                         <i className="fa-solid fa-box text-orange-500"></i>
+
                                         <span className="text-xs text-gray-400">
                                             Quality
                                         </span>
+
                                     </div>
 
                                     <div className="flex items-center gap-2">
+
                                         <i className="fa-solid fa-headset text-orange-500"></i>
+
                                         <span className="text-xs text-gray-400">
                                             Support
                                         </span>
+
                                     </div>
 
                                 </div>
@@ -108,17 +196,27 @@ const Login = () => {
 
                     </div>
 
+                    {/* RIGHT SIDE */}
+
                     <div className="flex items-center justify-center bg-[#141414] px-6 sm:px-10 lg:px-12 py-8 lg:py-6 overflow-y-auto">
 
                         <div className="w-full max-w-md">
 
+                            {/* MOBILE LOGO */}
+
                             <div className="lg:hidden flex items-center gap-3 mb-8">
 
                                 <div className="w-10 h-10 rounded-lg bg-orange-600/10 border border-orange-500/30 flex items-center justify-center">
-                                    <i className="fa-solid fa-layer-group text-orange-500"></i>
+
+                                    <img
+                                        src={Logo}
+                                        alt="ALU PRO Logo"
+                                    />
+
                                 </div>
 
                                 <div>
+
                                     <h2 className="font-extrabold tracking-wider">
                                         ALU PRO
                                     </h2>
@@ -126,9 +224,12 @@ const Login = () => {
                                     <p className="text-[8px] text-gray-500 tracking-widest">
                                         ALUMINIUM SOLUTIONS
                                     </p>
+
                                 </div>
 
                             </div>
+
+                            {/* HEADING */}
 
                             <div className="mb-6">
 
@@ -152,10 +253,14 @@ const Login = () => {
 
                             </div>
 
+                            {/* LOGIN FORM */}
+
                             <form
-                                onSubmit={(e) => e.preventDefault()}
+                                onSubmit={loginHandler}
                                 className="space-y-4"
                             >
+
+                                {/* EMAIL */}
 
                                 <div>
 
@@ -168,6 +273,9 @@ const Login = () => {
                                         <i className="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 text-sm pointer-events-none"></i>
 
                                         <input
+                                            value={form.email}
+                                            onChange={inputHandler}
+                                            name="email"
                                             type="email"
                                             placeholder="you@example.com"
                                             className="w-full h-11 pl-11 pr-4 bg-[#0c0c0c] border border-white/10 rounded-lg text-sm text-white placeholder-gray-600 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all"
@@ -176,6 +284,8 @@ const Login = () => {
                                     </div>
 
                                 </div>
+
+                                {/* PASSWORD */}
 
                                 <div>
 
@@ -199,28 +309,40 @@ const Login = () => {
                                         <i className="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 text-sm pointer-events-none"></i>
 
                                         <input
-                                            type={showPassword ? "text" : "password"}
+                                            value={form.password}
+                                            onChange={inputHandler}
+                                            name="password"
+                                            type={
+                                                showPassword
+                                                    ? "text"
+                                                    : "password"
+                                            }
                                             placeholder="Enter your password"
                                             className="w-full h-11 pl-11 pr-12 bg-[#0c0c0c] border border-white/10 rounded-lg text-sm text-white placeholder-gray-600 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all"
                                         />
 
                                         <button
                                             type="button"
-                                            onClick={() => setShowPassword(!showPassword)}
+                                            onClick={() =>
+                                                setShowPassword(!showPassword)
+                                            }
                                             className="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-gray-600 hover:text-orange-500 transition-colors cursor-pointer"
                                         >
+
                                             <i
-                                                className={`fa-solid ${
-                                                    showPassword
+                                                className={`fa-solid ${showPassword
                                                         ? "fa-eye-slash"
                                                         : "fa-eye"
-                                                } text-sm`}
+                                                    } text-sm`}
                                             ></i>
+
                                         </button>
 
                                     </div>
 
                                 </div>
+
+                                {/* REMEMBER ME */}
 
                                 <label className="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
 
@@ -234,6 +356,8 @@ const Login = () => {
                                     </span>
 
                                 </label>
+
+                                {/* LOGIN BUTTON */}
 
                                 <button
                                     type="submit"
@@ -252,6 +376,8 @@ const Login = () => {
 
                             </form>
 
+                            {/* OR */}
+
                             <div className="flex items-center gap-4 my-5">
 
                                 <div className="flex-1 h-px bg-white/10"></div>
@@ -264,7 +390,9 @@ const Login = () => {
 
                             </div>
 
-                            <button
+                            {/* GOOGLE */}
+
+                            {/* <button
                                 type="button"
                                 className="w-full h-11 border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] rounded-lg flex items-center justify-center gap-3 text-sm font-medium text-gray-300 transition-all cursor-pointer"
                             >
@@ -275,20 +403,27 @@ const Login = () => {
                                     Continue with Google
                                 </span>
 
-                            </button>
+                            </button> */}
+
+                            <SignupGoogle title={"Continue with Google"} toastify={" Google login successful! 🎉"}/>
+
+                            {/* SIGNUP */}
 
                             <p className="text-center text-xs text-gray-500 mt-5">
 
                                 Don't have an account?
 
-                                <a
-                                    href="#signup"
-                                    className="ml-1 text-orange-500 hover:text-orange-400 font-semibold transition-colors"
-                                >
-                                    Create Account
-                                </a>
+                                <Link to={"/signup"}>
+                                    <button
+                                        className="ml-1 text-orange-500 cursor-pointer hover:text-orange-400 font-semibold transition-colors"
+                                    >
+                                        Create Account
+                                    </button>
+                                </Link>
 
                             </p>
+
+                            {/* SECURITY */}
 
                             <div className="flex items-center justify-center gap-2 mt-5 text-[10px] text-gray-600">
 
@@ -308,9 +443,12 @@ const Login = () => {
 
             </main>
 
+            {/* TOAST CONTAINER */}
+
+            <Toast />
+
         </div>
     );
 };
 
 export default Login;
-
