@@ -1,23 +1,29 @@
 import React, { useState } from "react";
-import Logo from "../assets/logo.png"
+import Logo from "../assets/logo.png";
 import Img from "../assets/home.png";
 import Input from "../components/Input";
 import { toast } from "react-toastify";
 import Toast from "../components/toast";
 import { Link } from "react-router-dom";
 
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../components/firebase/config";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+
+import { auth, db } from "../components/firebase/config";
 import SignupGoogle from "../components/signupGoogle";
 
-
 const Signup = () => {
-
-
+    // Password visibility
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+    // Loading state
+    const [loading, setLoading] = useState(false);
+
+    // Terms checkbox
+    const [agreeTerms, setAgreeTerms] = useState(false);
+
+    // Form state
     const [form, setForm] = useState({
         username: "",
         email: "",
@@ -26,6 +32,7 @@ const Signup = () => {
         phone: "",
     });
 
+    // Handle input changes
     const handleInput = (e) => {
         const { name, value } = e.target;
 
@@ -35,13 +42,43 @@ const Signup = () => {
         }));
     };
 
+    // Save user data in Firestore
+    const saveDetaDB = async (user) => {
+        console.log(user)
+        try {
+            await setDoc(doc(db, "users", user.uid), {
+                uid: user.uid,
+                username: form.username,
+                email: user.email,
+                phone: form.phone,
+                role: "user",
+                createdAt: serverTimestamp(),
+            });
+
+            return true;
+        } catch (error) {
+            console.error("Firestore Error:", error);
+
+            toast.error(
+                error?.message || "Failed to save user data."
+            );
+
+            return false;
+        }
+    };
+
+    // Signup handler
     const signupHandler = async (e) => {
         e.preventDefault();
 
+        // Prevent multiple clicks
+        if (loading) return;
+
+        // Check all fields
         if (
-            !form.username ||
-            !form.email ||
-            !form.phone ||
+            !form.username.trim() ||
+            !form.email.trim() ||
+            !form.phone.trim() ||
             !form.password ||
             !form.confirmPassword
         ) {
@@ -49,27 +86,48 @@ const Signup = () => {
             return;
         }
 
+        // Check password length
         if (form.password.length < 6) {
             toast.error("Password must be at least 6 characters.");
             return;
         }
 
+        // Check password match
         if (form.password !== form.confirmPassword) {
             toast.error("Passwords do not match.");
             return;
         }
 
+        // Check terms
+        if (!agreeTerms) {
+            toast.error("Please agree to the Terms & Conditions.");
+            return;
+        }
+
         try {
+            setLoading(true);
+
+            // Create Firebase Authentication account
             const response = await createUserWithEmailAndPassword(
                 auth,
-                form.email,
+                form.email.trim(),
                 form.password
             );
 
-            console.log("Signup successful:", response);
+            console.log("Signup successful:", response.user);
 
-            toast.success("Account created successfully! 🎉");
+            // Save additional user information in Firestore
+            if (response.user) {
+                const dataSaved = await saveDetaDB(response.user);
 
+                if (!dataSaved) {
+                    return;
+                }
+
+                toast.success("Account created successfully.");
+            }
+
+            // Reset form
             setForm({
                 username: "",
                 email: "",
@@ -78,8 +136,12 @@ const Signup = () => {
                 phone: "",
             });
 
+            setAgreeTerms(false);
+            setShowPassword(false);
+            setShowConfirmPassword(false);
+
         } catch (error) {
-            console.log("Signup error:", error);
+            console.error("Signup error:", error);
 
             if (error.code === "auth/email-already-in-use") {
                 toast.error("This email is already registered.");
@@ -87,32 +149,19 @@ const Signup = () => {
                 toast.error("Please enter a valid email address.");
             } else if (error.code === "auth/weak-password") {
                 toast.error("Password is too weak.");
+            } else if (error.code === "auth/network-request-failed") {
+                toast.error("Network error. Please check your internet.");
             } else {
-                toast.error("Something went wrong. Please try again.");
+                toast.error(
+                    error?.message || "Something went wrong. Please try again."
+                );
             }
+        } finally {
+            setLoading(false);
         }
     };
 
-    const signupGoogle = async () => {
-        try {
-            const provider = new GoogleAuthProvider();
-
-            const response = await signInWithPopup(auth, provider);
-
-            console.log("Google Signup Successful:", response.user);
-
-            toast.success("Google account created successfully! 🎉");
-
-        } catch (error) {
-            console.log("Google Signup Error:", error);
-
-            if (error.code === "auth/popup-closed-by-user") {
-                toast.error("Google signup was cancelled.");
-            } else {
-                toast.error("Google signup failed. Please try again.");
-            }
-        }
-    };
+    // Google signup is handled by SignupGoogle component
 
     return (
         <div className="min-h-screen bg-[#0a0a0a] text-white font-sans overflow-x-hidden">
@@ -138,16 +187,21 @@ const Signup = () => {
                         <div className="relative z-10 flex flex-col justify-between w-full p-10">
 
                             <div>
+
                                 <div className="flex items-center gap-3">
 
                                     <div className="w-11 h-11 rounded-lg bg-orange-600/10 border border-orange-500/30 flex items-center justify-center">
-                                        {/* <i className="fa-solid fa-layer-group text-orange-500 text-lg"></i> 
-                                        */}
 
-                                        <img src={Logo} alt="" />
+                                        <img
+                                            src={Logo}
+                                            alt="ALU PRO Logo"
+                                            className="w-full h-full object-contain rounded-lg"
+                                        />
+
                                     </div>
 
                                     <div>
+
                                         <h2 className="text-xl font-extrabold tracking-wider">
                                             ALU PRO
                                         </h2>
@@ -155,9 +209,11 @@ const Signup = () => {
                                         <p className="text-[9px] text-gray-500 tracking-[0.2em]">
                                             ALUMINIUM SOLUTIONS
                                         </p>
+
                                     </div>
 
                                 </div>
+
                             </div>
 
                             <div>
@@ -173,11 +229,14 @@ const Signup = () => {
                                 </div>
 
                                 <h1 className="text-4xl xl:text-5xl font-extrabold leading-tight mb-4">
+
                                     Build Your
                                     <br />
+
                                     <span className="text-orange-500">
                                         Account.
                                     </span>
+
                                 </h1>
 
                                 <p className="text-gray-400 text-sm leading-6 max-w-md">
@@ -241,10 +300,17 @@ const Signup = () => {
                             <div className="lg:hidden flex items-center gap-3 mb-7">
 
                                 <div className="w-10 h-10 rounded-lg bg-orange-600/10 border border-orange-500/30 flex items-center justify-center">
-                                    <i className="fa-solid fa-layer-group text-orange-500"></i>
+
+                                    <img
+                                        src={Logo}
+                                        alt="ALU PRO Logo"
+                                        className="w-full h-full object-contain rounded-lg"
+                                    />
+
                                 </div>
 
                                 <div>
+
                                     <h2 className="font-extrabold tracking-wider">
                                         ALU PRO
                                     </h2>
@@ -252,6 +318,7 @@ const Signup = () => {
                                     <p className="text-[8px] text-gray-500 tracking-widest">
                                         ALUMINIUM SOLUTIONS
                                     </p>
+
                                 </div>
 
                             </div>
@@ -355,12 +422,15 @@ const Signup = () => {
                                             }
                                             className="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-gray-600 hover:text-orange-500 transition-colors cursor-pointer"
                                         >
+
                                             <i
-                                                className={`fa-solid ${showPassword
-                                                    ? "fa-eye-slash"
-                                                    : "fa-eye"
-                                                    } text-sm`}
+                                                className={`fa-solid ${
+                                                    showPassword
+                                                        ? "fa-eye-slash"
+                                                        : "fa-eye"
+                                                } text-sm`}
                                             ></i>
+
                                         </button>
 
                                     </div>
@@ -401,12 +471,15 @@ const Signup = () => {
                                             }
                                             className="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-gray-600 hover:text-orange-500 transition-colors cursor-pointer"
                                         >
+
                                             <i
-                                                className={`fa-solid ${showConfirmPassword
-                                                    ? "fa-eye-slash"
-                                                    : "fa-eye"
-                                                    } text-sm`}
+                                                className={`fa-solid ${
+                                                    showConfirmPassword
+                                                        ? "fa-eye-slash"
+                                                        : "fa-eye"
+                                                } text-sm`}
                                             ></i>
+
                                         </button>
 
                                     </div>
@@ -419,10 +492,15 @@ const Signup = () => {
 
                                     <input
                                         type="checkbox"
+                                        checked={agreeTerms}
+                                        onChange={(e) =>
+                                            setAgreeTerms(e.target.checked)
+                                        }
                                         className="w-4 h-4 mt-0.5 accent-orange-600 cursor-pointer"
                                     />
 
                                     <span className="leading-5">
+
                                         I agree to
 
                                         <a
@@ -431,6 +509,7 @@ const Signup = () => {
                                         >
                                             Terms & Conditions
                                         </a>
+
                                     </span>
 
                                 </label>
@@ -439,15 +518,34 @@ const Signup = () => {
 
                                 <button
                                     type="submit"
-                                    className="group w-full h-11 bg-orange-600 hover:bg-orange-500 rounded-lg text-sm font-semibold flex items-center justify-center gap-3 transition-all duration-300 hover:shadow-lg hover:shadow-orange-600/20 cursor-pointer"
+                                    disabled={loading}
+                                    className={`group w-full h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-3 transition-all duration-300 ${
+                                        loading
+                                            ? "bg-orange-700 cursor-not-allowed opacity-80"
+                                            : "bg-orange-600 hover:bg-orange-500 hover:shadow-lg hover:shadow-orange-600/20 cursor-pointer"
+                                    }`}
                                 >
-                                    <i className="fa-solid fa-user-plus"></i>
 
-                                    <span>
-                                        Create Account
-                                    </span>
+                                    {loading ? (
+                                        <>
+                                            <i className="fa-solid fa-spinner fa-spin"></i>
 
-                                    <i className="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                                            <span>
+                                                Creating Account...
+                                            </span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <i className="fa-solid fa-user-plus"></i>
+
+                                            <span>
+                                                Create Account
+                                            </span>
+
+                                            <i className="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                                        </>
+                                    )}
+
                                 </button>
 
                             </form>
@@ -468,19 +566,10 @@ const Signup = () => {
 
                             {/* GOOGLE */}
 
-                            {/* <button
-                                onClick={signupGoogle}
-                                type="button"
-                                className="w-full h-11 border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] rounded-lg flex items-center justify-center gap-3 text-sm font-medium text-gray-300 transition-all cursor-pointer"
-                            >
-                                <i className="fa-brands fa-google text-sm"></i>
-
-                                <span>
-                                    Continue with Google
-                                </span>
-                            </button> */}
-
-                            <SignupGoogle title={"Signup with Google"} toastify={" Google signup successful! 🎉"}/>
+                            <SignupGoogle
+                                title="Signup with Google"
+                                toastify="Google signup successful!"
+                            />
 
                             {/* LOGIN */}
 
@@ -488,12 +577,15 @@ const Signup = () => {
 
                                 Already have an account?
 
-                                <Link to={"/login"}>
+                                <Link to="/login">
+
                                     <button
+                                        type="button"
                                         className="ml-1 text-orange-500 hover:text-orange-400 font-semibold transition-colors cursor-pointer"
                                     >
                                         Login
                                     </button>
+
                                 </Link>
 
                             </p>
