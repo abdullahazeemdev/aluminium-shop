@@ -13,26 +13,55 @@ import Dashboard from "./layouts/Dashboard";
 import DashboardHome from "./pages/DashboardHome";
 import HelpSupport from "./pages/Help";
 import MyOrders from "./pages/MyOrder";
+import Profile from "./pages/Profile";
 
 import ProtectedRoute from "./components/protectedRoute";
-import Profile from "./pages/Profile";
+import PublicRoute from "./components/PublicRoute";
 
 const App = () => {
     return (
         <BrowserRouter>
             <Routes>
 
-                {/* ================= PUBLIC / USER ROUTES ================= */}
+                {/* ================= PUBLIC ROUTES ================= */}
 
-                <Route path="/" element={<Home />} />
+                {/* 
+                    Agar user login nahi hai:
+                    / → Home
 
-                <Route path="/login" element={<Login />} />
+                    Agar user already login hai:
+                    / → Dashboard
+                */}
+                <Route
+                    path="/"
+                    element={
+                        <PublicRoute>
+                            <Home />
+                        </PublicRoute>
+                    }
+                />
 
-                <Route path="/signup" element={<Signup />} />
+                {/* Login page */}
+                <Route
+                    path="/login"
+                    element={
+                        <PublicRoute>
+                            <Login />
+                        </PublicRoute>
+                    }
+                />
 
+                {/* Signup page */}
+                <Route
+                    path="/signup"
+                    element={
+                        <PublicRoute>
+                            <Signup />
+                        </PublicRoute>
+                    }
+                />
 
-
-
+                {/* ================= PROTECTED DASHBOARD ================= */}
 
                 <Route
                     path="/dashboard"
@@ -42,22 +71,53 @@ const App = () => {
                         </ProtectedRoute>
                     }
                 >
-                    <Route index element={<DashboardHome />} />
+                    {/* Dashboard Home */}
+                    <Route
+                        index
+                        element={<DashboardHome />}
+                    />
 
-                    <Route path="about" element={<About />} />
+                    {/* About */}
+                    <Route
+                        path="about"
+                        element={<About />}
+                    />
 
-                    <Route path="products" element={<Products />} />
+                    {/* Products */}
+                    <Route
+                        path="products"
+                        element={<Products />}
+                    />
 
-                    <Route path="services" element={<Services />} />
+                    {/* Services */}
+                    <Route
+                        path="services"
+                        element={<Services />}
+                    />
 
-                    <Route path="contact" element={<Contact />} />
+                    {/* Contact */}
+                    <Route
+                        path="contact"
+                        element={<Contact />}
+                    />
 
-                    <Route path="profile" element={<Profile />} />
+                    {/* Profile */}
+                    <Route
+                        path="profile"
+                        element={<Profile />}
+                    />
 
-                    <Route path="help" element={<HelpSupport />} />
+                    {/* Help & Support */}
+                    <Route
+                        path="help"
+                        element={<HelpSupport />}
+                    />
 
-                    <Route path="orders" element={<MyOrders />} />
-                    
+                    {/* My Orders */}
+                    <Route
+                        path="orders"
+                        element={<MyOrders />}
+                    />
                 </Route>
 
             </Routes>
@@ -65,4 +125,4 @@ const App = () => {
     );
 };
 
-export default App;
+export default App
