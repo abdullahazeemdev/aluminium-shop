@@ -4,7 +4,7 @@ import Img from "../assets/home.png";
 import Input from "../components/Input";
 import { toast } from "react-toastify";
 import Toast from "../components/toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -13,6 +13,7 @@ import { auth, db } from "../components/firebase/config";
 import SignupGoogle from "../components/signupGoogle";
 
 const Signup = () => {
+    const navigate = useNavigate();
     // Password visibility
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -125,6 +126,10 @@ const Signup = () => {
                 }
 
                 toast.success("Account created successfully.");
+                setTimeout(() =>{
+                   navigate("/login") 
+                },1500)
+                
             }
 
             // Reset form

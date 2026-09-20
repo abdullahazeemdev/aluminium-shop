@@ -50,12 +50,12 @@ const About = () => {
             <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 py-16 sm:py-24 lg:py-28">
 
                 {/* Logo */}
-                <div className="mb-9 sm:mb-12 lg:mb-14">
+                <div className="">
 
                     <img
                         src={Logo}
                         alt="ALU PRO Logo"
-                        className="h-9 sm:h-11 md:h-14 w-auto max-w-[180px] object-contain transition duration-300 hover:scale-105"
+                        className="h-9 sm:h-4 md:h-14 w-auto max-w-[180px] object-contain transition duration-300 hover:scale-105"
                     />
 
                 </div>
@@ -67,7 +67,7 @@ const About = () => {
                     {/* Label */}
                     <div className="inline-flex items-center gap-2 sm:gap-3 mb-5">
 
-                        <span className="w-7 sm:w-10 h-[2px] bg-[#ff7700]" />
+                        <span className="w-7 sm:w-10 h-[2px] bg-[#ff7700] ml-1" />
 
                         <span className="text-[#ff7700] text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-[2px] sm:tracking-[3px]">
                             About ALU PRO

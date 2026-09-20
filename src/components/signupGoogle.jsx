@@ -5,8 +5,11 @@ import {doc,serverTimestamp,setDoc,} from "firebase/firestore";
 
 import { auth, db } from "./firebase/config.js";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const SignupGoogle = ({ title, toastify }) => {
+
+    const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
 
@@ -58,6 +61,10 @@ const SignupGoogle = ({ title, toastify }) => {
             toast.success(
                 toastify || "Google signup successful!"
             );
+
+            setTimeout(() =>{
+                navigate("/dashboard")
+            },1500)
 
         } catch (error) {
 

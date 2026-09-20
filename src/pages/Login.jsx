@@ -1,16 +1,15 @@
-import React, { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useState } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import Img from "../assets/home.png";
 import Logo from "../assets/logo.png";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../components/firebase/config";
-import { toast } from "react-toastify";
-import Toast from "../components/toast";
-import { Link } from "react-router-dom";
-import signupGoogle from "../components/signupGoogle";
-import Signup from "./Signup";
 import SignupGoogle from "../components/signupGoogle";
+import Toast from "../components/toast";
 
 const Login = () => {
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
 
     const [form, setForm] = useState({
@@ -29,6 +28,8 @@ const Login = () => {
 
     const loginHandler = async (e) => {
         e.preventDefault();
+
+        
 
         // Empty fields validation
         if (!form.email || !form.password) {
@@ -49,6 +50,9 @@ const Login = () => {
                 email: "",
                 password: "",
             });
+             setTimeout(() => {
+                navigate("/dashboard")
+             }, 1500);
 
         } catch (error) {
             console.log("Login error:", error);

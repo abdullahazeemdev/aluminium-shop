@@ -1,7 +1,25 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "./firebase/config";
+import { toast } from "react-toastify";
 
 const Asidebar = () => {
+
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+
+            toast.success("Logout successful!");
+
+            navigate("/");
+
+        } catch (error) {
+            toast.error("Logout failed!");
+        }
+    };
     const [isOpen, setIsOpen] = useState(false);
     const navItems = [
         {
@@ -195,7 +213,7 @@ const Asidebar = () => {
 
 
                         <NavLink
-                            to="/dashboard/support"
+                            to="/dashboard/help"
                             onClick={() => setIsOpen(false)}
                             className={({ isActive }) =>
                                 `relative flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition-all duration-200 group border ${isActive
@@ -271,8 +289,9 @@ const Asidebar = () => {
 
                     {/* Logout */}
                     <button
+                        onClick={handleLogout}
                         type="button"
-                        className="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 border border-transparent hover:border-red-500/10 transition-all duration-200 group"
+                        className="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 border border-transparent hover:border-red-500/10 transition-all duration-200 group cursor-pointer"
                     >
 
                         <span className="w-9 h-9 rounded-lg flex items-center justify-center group-hover:bg-red-500/10 transition-all">

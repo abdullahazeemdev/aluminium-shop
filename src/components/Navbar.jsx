@@ -45,7 +45,7 @@ const Navbar = () => {
 
                         <li>
                             <Link
-                                to="/products"
+                                to="/login"
                                 className="text-[#b0b0b0] hover:text-[#ff7700] text-sm font-medium transition-colors"
                             >
                                 Products
@@ -54,7 +54,7 @@ const Navbar = () => {
 
                         <li>
                             <Link
-                                to="/services"
+                                to="/login"
                                 className="text-[#b0b0b0] hover:text-[#ff7700] text-sm font-medium transition-colors"
                             >
                                 Services
@@ -63,7 +63,7 @@ const Navbar = () => {
 
                         <li>
                             <Link
-                                to="/about"
+                                to="/login"
                                 className="text-[#b0b0b0] hover:text-[#ff7700] text-sm font-medium transition-colors"
                             >
                                 About Us
@@ -81,7 +81,7 @@ const Navbar = () => {
 
                         <li>
                             <Link
-                                to="/contact"
+                                to="/login"
                                 className="text-[#b0b0b0] hover:text-[#ff7700] text-sm font-medium transition-colors"
                             >
                                 Contact Us
@@ -144,7 +144,7 @@ const Navbar = () => {
 
                             <li>
                                 <Link
-                                    to="/products"
+                                    to="/login"
                                     onClick={() => setIsOpen(false)}
                                     className="block text-[#b0b0b0] hover:text-[#ff7700] hover:bg-[#1b1b1b] text-sm font-medium px-3 py-3 rounded-lg transition-all"
                                 >
@@ -154,7 +154,7 @@ const Navbar = () => {
 
                             <li>
                                 <Link
-                                    to="/services"
+                                    to="/login"
                                     onClick={() => setIsOpen(false)}
                                     className="block text-[#b0b0b0] hover:text-[#ff7700] hover:bg-[#1b1b1b] text-sm font-medium px-3 py-3 rounded-lg transition-all"
                                 >
@@ -164,7 +164,7 @@ const Navbar = () => {
 
                             <li>
                                 <Link
-                                    to="/about"
+                                    to="/login"
                                     onClick={() => setIsOpen(false)}
                                     className="block text-[#b0b0b0] hover:text-[#ff7700] hover:bg-[#1b1b1b] text-sm font-medium px-3 py-3 rounded-lg transition-all"
                                 >
@@ -174,7 +174,7 @@ const Navbar = () => {
 
                             <li>
                                 <Link
-                                    to="/why-aluminium"
+                                    to="/dashboard/why-aluminium"
                                     onClick={() => setIsOpen(false)}
                                     className="block text-[#b0b0b0] hover:text-[#ff7700] hover:bg-[#1b1b1b] text-sm font-medium px-3 py-3 rounded-lg transition-all"
                                 >
@@ -184,7 +184,7 @@ const Navbar = () => {
 
                             <li>
                                 <Link
-                                    to="/contact"
+                                    to="/login"
                                     onClick={() => setIsOpen(false)}
                                     className="block text-[#b0b0b0] hover:text-[#ff7700] hover:bg-[#1b1b1b] text-sm font-medium px-3 py-3 rounded-lg transition-all"
                                 >

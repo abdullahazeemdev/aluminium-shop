@@ -4,11 +4,11 @@ import Asidebar from "../components/Asidebar";
 
 const Dashboard = () => {
     return (
-        <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#121212]">
+        <div className="min-h-screen bg-[#121212]">
 
             <Asidebar />
 
-            <main className="min-h-screen w-full min-w-0 lg:ml-64 lg:w-[calc(100%-16rem)]">
+            <main className="lg:ml-64 min-h-screen">
                 <Outlet />
             </main>
 
