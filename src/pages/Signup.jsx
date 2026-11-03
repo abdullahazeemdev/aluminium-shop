@@ -3,7 +3,6 @@ import Logo from "../assets/logo.png";
 import Img from "../assets/home.png";
 import Input from "../components/Input";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { Link, useNavigate } from "react-router-dom";
 
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
