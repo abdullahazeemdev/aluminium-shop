@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Logo from "../assets/logo.png";
 import Img from "../assets/home.png";
 import Input from "../components/Input";
 import { toast } from "react-toastify";
-import Toast from "../components/toast";
+import "react-toastify/dist/ReactToastify.css";
 import { Link, useNavigate } from "react-router-dom";
 
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
@@ -45,7 +45,7 @@ const Signup = () => {
 
     // Save user data in Firestore
     const saveDetaDB = async (user) => {
-        console.log(user)
+        console.log(user);
         try {
             await setDoc(doc(db, "users", user.uid), {
                 uid: user.uid,
@@ -126,10 +126,9 @@ const Signup = () => {
                 }
 
                 toast.success("Account created successfully.");
-                setTimeout(() =>{
-                   navigate("/login") 
-                },1500)
-                
+                setTimeout(() => {
+                    navigate("/login");
+                }, 1500);
             }
 
             // Reset form
@@ -165,8 +164,6 @@ const Signup = () => {
             setLoading(false);
         }
     };
-
-    // Google signup is handled by SignupGoogle component
 
     return (
         <div className="min-h-screen bg-[#0a0a0a] text-white font-sans overflow-x-hidden">
@@ -614,8 +611,6 @@ const Signup = () => {
                 </div>
 
             </main>
-
-            <Toast />
 
         </div>
     );
